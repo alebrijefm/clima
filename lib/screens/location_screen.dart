@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 import '../services/weather.dart';
+import 'city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
   final locationWeather;
@@ -21,6 +22,14 @@ class _LocationScreenState extends State<LocationScreen> {
   void updateUI(dynamic weatherData) {
     setState(
       () {
+        if (weatherModel == null) {
+          temperature = 0;
+          weatherIcon = 'Error';
+          message = 'Unable to get the weather';
+          cityName = '';
+          return;
+        }
+
         double temp = weatherData['main']['temp'];
         temperature = temp.toInt();
         message = weatherModel.getMessage(temperature);
@@ -69,7 +78,16 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var typeName = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CityScreen(),
+                        ),
+                      );
+
+                      print(typeName);
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
